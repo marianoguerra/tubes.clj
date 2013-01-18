@@ -1,0 +1,22 @@
+tubes
+=====
+
+        a series of tubes
+
+tubes is a library that gives you uncomplected little functions (checkers or
+mutators) and a composition mecanism (pipe, at-least-one-ok) to build web
+apps/APIs by composing small functions that are easy to understand, test and
+reuse.
+
+*pipe* will run the operations until the first fails or there are no more operations
+to perform, the data generated on one stage is passed to the next so you can
+mutate the data passed through (as in pipes, unix pipes ;)
+
+the library also provides some utilities to transform the response on the way out.
+
+license
+-------
+
+Copyright (C) 2013 Mariano Guerra
+
+Distributed under the Eclipse Public License, the same as Clojure.
