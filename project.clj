@@ -1,4 +1,4 @@
-(defproject tubes "0.1.0-SNAPSHOT"
+(defproject org.marianoguerra/tubes "0.1.0-SNAPSHOT"
   :description "uncomplected web app building blocks"
   :url "http://github.com/marianoguerra/tubes"
   :license {:name "Eclipse Public License"
