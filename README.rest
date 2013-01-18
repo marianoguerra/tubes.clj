@@ -14,6 +14,18 @@ mutate the data passed through (as in pipes, unix pipes ;)
 
 the library also provides some utilities to transform the response on the way out.
 
+install
+-------
+
+go to clojars for instructions:
+
+https://clojars.org/org.marianoguerra/tubes
+
+examples
+--------
+
+for now you can check tests for usage examples
+
 license
 -------
 
