@@ -142,13 +142,13 @@
 
              (is (ok? result-session))
              (is (ok? result-user))
-             (is (not (ok? result-not-found)))
              
              (is (= (:data result-session) "session"))
              (is (= (:data result-user) "user"))
 
-             (error-type-is result-not-found :not-found)
-             (error-reason-is result-not-found "no handler for: /person")))
+             (is (= (:body result-not-found) "no handler for: /person"))
+             (is (= (:status result-not-found) 404))
+             (is (= (:headers result-not-found) {"Content-Type" "text/plain"}))))
 
   (testing "dispatch-by-method"
            (let [req1 (post "/session" entity-json)

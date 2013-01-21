@@ -27,7 +27,7 @@
                  (assoc headers "Content-Type" json-content-type)))
 
 (defn text-response [data & [status headers]]
-  (http-response (generate-string data)
+  (http-response data
                  status
                  (assoc headers "Content-Type" text-content-type)))
 
@@ -97,9 +97,7 @@
 
         (if tube
           (tube req)
-          (error {:reason (str "no handler for: " path)
-                  :actual path
-                  :type :not-found}))))))
+          (text-response (str "no handler for: " path) 404))))))
 
 (defn dispatch-by-method [method-to-tube]
   "receive a map with method as key and handler as value, dispatch to handler
