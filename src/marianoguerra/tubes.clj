@@ -21,6 +21,16 @@
    :headers (or headers {})
    :body data})
 
+(defn json-response [data & [status headers]]
+  (http-response (generate-string data)
+                 status
+                 (assoc headers "Content-Type" json-content-type)))
+
+(defn text-response [data & [status headers]]
+  (http-response (generate-string data)
+                 status
+                 (assoc headers "Content-Type" text-content-type)))
+
 (defn throw-on-unknown-status [status]
   (throw (IllegalArgumentException.
            (str "unknown status: " (name status)))))
