@@ -3,7 +3,7 @@
     [closchema.core :as schema]
     [cemerick.friend :as friend])
   (:use marianoguerra.pipe
-        [clojure.data.json :only (read-json json-str)]))
+        [cheshire.core :only (parse-string generate-string)]))
 
 (def json-content-type "application/json")
 (def text-content-type "text/plain")
@@ -123,7 +123,7 @@
 ;; request -> object handlers
 
 (defn extract-json-body [req]
-  (let [json-body (read-json (slurp (:body req)))]
+  (let [json-body (parse-string (slurp (:body req)) true)]
 
     (ok (with-meta json-body {:request req}))))
 
@@ -143,7 +143,7 @@
   (let [headers (:headers response)
         new-headers (assoc headers "Content-Type" json-content-type)
         body (:body response)
-        new-body (json-str body)]
+        new-body (generate-string body)]
 
     (assoc response :headers new-headers :body new-body)))
 

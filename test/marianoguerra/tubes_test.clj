@@ -5,7 +5,7 @@
   (:use marianoguerra.tubes
         marianoguerra.pipe
         clojure.test
-        [clojure.data.json :only (read-json json-str)]))
+        [cheshire.core :only (parse-string generate-string)]))
 
 (defn request-with-body [path body method & [content-type]]
   (req/content-type
@@ -13,7 +13,7 @@
     (or content-type "application/json")))
 
 (def entity {:username "bob" :password "secret" :age 27 :admin false})
-(def entity-json (json-str entity))
+(def entity-json (generate-string entity))
 
 (defn object-schema [required properties]
   {:type "object"
@@ -101,7 +101,7 @@
                                  extract-json-body
                                  (conforms-to-json-schema entity-schema))
 
-                 req-over-age (post "/session" (json-str
+                 req-over-age (post "/session" (generate-string
                                                  {:username "asd"
                                                   :password "secret"
                                                   :age 200
@@ -200,7 +200,7 @@
              (is (= (get-in json-response [:headers "Content-Type"])
                     json-content-type))
 
-             (is (= (read-json (:body json-response)) {:a 1 :b false}))))
+             (is (= (parse-string (:body json-response) true) {:a 1 :b false}))))
 
   (testing "has-one-of-roles"
            (let [req (attach-identity (post "/session" entity-json))
