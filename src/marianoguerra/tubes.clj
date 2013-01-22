@@ -37,7 +37,8 @@
 
 (defn type-to-status [status extra-status-handler]
   (case status
-    :error 400
+    :error 500
+    :bad-request 400
     :unauthorized 403
     :not-found 404
     :timeout 504
