@@ -37,10 +37,28 @@
 
 (defn type-to-status [status extra-status-handler & [response]]
   (case status
-    :error 500
+    :ok 200
+    :created 201
+    :accepted 202
+    :no-content 204
+    :moved 301
+    :found 302
+    :see-other 303
+    :not-modified 304
     :bad-request 400
-    :unauthorized 403
+    :unauthorized 401
+    :forbidden 403
     :not-found 404
+    :method-not-supported 405
+    :conflict 409
+    :length-required 411
+    :entity-too-large 413
+    :too-many-requests 429
+    :error 500
+    :not-implemented 501
+    :bad-gateway 502
+    :service-unavailable 503
+    :gateway-timeout 504
     :timeout 504
 
     (extra-status-handler status response)))
