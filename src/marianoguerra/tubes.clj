@@ -175,12 +175,21 @@
     (assoc response :headers new-headers :body new-body)))
 
 (defn response-to-http-response [extra-status-handler]
+  "convert response from marianoguerra.pipe.Result to a ring http response if
+  response has truthy :type and :data fields (a duck typist way of checking that
+  it's actually a pipe.Result and not already a ring response or something else.
+
+  :type will be converted to a status according to type-to-status, if :type
+  value not known by type-to-status it will call extra-status-handler so you
+  can decide the status or do something else"
   (fn [response]
     (let [{type :type data :data} response]
-      (if (= type :ok)
-        (http-response data)
-        (http-response data (type-to-status (get-in response [:data :type])
-                                            extra-status-handler response))))))
+      (if (and type data)
+        (if (= type :ok)
+          (http-response data)
+          (http-response data (type-to-status (get-in response [:data :type])
+                                              extra-status-handler response)))
+        response))))
 
 (defn change-http-status [status-map]
   "receive a map of values to match as keys and replacements as values,
