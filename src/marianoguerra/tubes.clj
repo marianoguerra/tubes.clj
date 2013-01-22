@@ -31,11 +31,11 @@
                  status
                  (assoc headers "Content-Type" text-content-type)))
 
-(defn throw-on-unknown-status [status]
+(defn throw-on-unknown-status [status request]
   (throw (IllegalArgumentException.
-           (str "unknown status: " (name status)))))
+           (str "unknown status: " (name status) request))))
 
-(defn type-to-status [status extra-status-handler]
+(defn type-to-status [status extra-status-handler & [response]]
   (case status
     :error 500
     :bad-request 400
@@ -43,7 +43,7 @@
     :not-found 404
     :timeout 504
 
-    (extra-status-handler status)))
+    (extra-status-handler status response)))
 
 (defn at-least-one-ok [& funs]
   (fn [obj]
@@ -162,7 +162,7 @@
       (if (= type :ok)
         (http-response data)
         (http-response data (type-to-status (get-in response [:data :type])
-                                            extra-status-handler))))))
+                                            extra-status-handler response))))))
 
 (defn change-http-status [status-map]
   "receive a map of values to match as keys and replacements as values,

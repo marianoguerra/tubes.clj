@@ -176,7 +176,7 @@
            (let [ok-resp ((response-to-http-response throw-on-unknown-status) (ok 42))
                  not-found-resp ((response-to-http-response throw-on-unknown-status)
                                                            (error {:type :not-found}))
-                 custom-status ((response-to-http-response (fn [status] [status 1000]))
+                 custom-status ((response-to-http-response (fn [status _] [status 1000]))
                                 (error {:type :hi}))]
 
              (is (= (:status ok-resp) 200))
