@@ -183,12 +183,14 @@
   value not known by type-to-status it will call extra-status-handler so you
   can decide the status or do something else"
   (fn [response]
-    (let [{type :type data :data} response]
+    (let [{type :type data :data} response
+          headers (:response-headers (meta response))]
       (if (and type data)
         (if (= type :ok)
-          (http-response data)
+          (http-response data 200 headers)
           (http-response data (type-to-status (get-in response [:data :type])
-                                              extra-status-handler response)))
+                                              extra-status-handler response)
+                         headers))
         response))))
 
 (defn change-http-status [status-map]

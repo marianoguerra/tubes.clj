@@ -187,6 +187,18 @@
                            ((response-to-http-response throw-on-unknown-status)
                                                       (error {:type :asd}))))))
 
+  (testing "response-to-http-response with :response-headers metadata"
+           (let [ok-resp ((response-to-http-response throw-on-unknown-status)
+                       (with-meta (ok 42)
+                                  {:response-headers {"X-Custom" "hi"}}))
+                 err-resp ((response-to-http-response throw-on-unknown-status)
+                       (with-meta (error {:type :error})
+                                  {:response-headers {"X-Custom" "hi"}}))]
+
+             (println ok-resp err-resp)
+             (is (= (get-in ok-resp  [:headers "X-Custom"]) "hi"))
+             (is (= (get-in err-resp [:headers "X-Custom"]) "hi"))))
+
   (testing "http-response-body-to-json"
            (let [http-response (assoc (http-response {:a 1 :b false} 201
                                                      {"X-Custom" "hi"})
