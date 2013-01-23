@@ -195,7 +195,6 @@
                        (with-meta (error {:type :error})
                                   {:response-headers {"X-Custom" "hi"}}))]
 
-             (println ok-resp err-resp)
              (is (= (get-in ok-resp  [:headers "X-Custom"]) "hi"))
              (is (= (get-in err-resp [:headers "X-Custom"]) "hi"))))
 
