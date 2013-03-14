@@ -3,16 +3,13 @@ tubes
 
         a series of tubes
 
-tubes is a library that gives you uncomplected little functions (checkers or
-mutators) and a composition mecanism (pipe, at-least-one-ok) to build web
-apps/APIs by composing small functions that are easy to understand, test and
-reuse.
 
-*pipe* will run the operations until the first fails or there are no more operations
-to perform, the data generated on one stage is passed to the next so you can
-mutate the data passed through (as in pipes, unix pipes ;)
+tubes is a library that allows you creating web applications by composing little
+functions using the `pipe library <http://github.com/marianoguerra/pipe>`_
+to check or mutate the request along the way.
 
-the library also provides some utilities to transform the response on the way out.
+tubes make it easy to test each functionality in isolation or on blocks at
+different levels by using pipe's compose functionality.
 
 install
 -------
@@ -20,11 +17,6 @@ install
 go to clojars for instructions:
 
 https://clojars.org/org.marianoguerra/tubes
-
-examples
---------
-
-for now you can check tests for usage examples
 
 license
 -------
