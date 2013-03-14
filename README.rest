@@ -4,8 +4,8 @@ tubes
         a series of tubes
 
 
-tubes is a library that allows you creating web applications by composing little
-functions using the `pipe library <http://github.com/marianoguerra/pipe>`_
+tubes is a library that allows you to create web applications by composing little
+functions using the `pipe library <http://github.com/marianoguerra/pipe.clj>`_
 to check or mutate the request along the way.
 
 tubes make it easy to test each functionality in isolation or on blocks at
