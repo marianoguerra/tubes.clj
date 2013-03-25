@@ -9,12 +9,6 @@
 
 ;; utilities
 
-(defn error [value]
-  (finish value {:error true}))
-
-(defn is-error? [value]
-  (:error (meta value)))
-
 (defn http-response [data & [status headers]]
   {:status (or status 200)
    :headers (or headers {})
@@ -134,7 +128,7 @@
 (defn to-ring-response [value]
   (let [meta-data (meta value)
         response-status-0 (or (:response-status meta-data) 200)
-        response-status (if (is-error? value)
+        response-status (if (error? value)
                           (or (get (:type value) type-to-status) response-status-0)
                           response-status-0)
         response-headers (or (:response-headers meta-data) {})]

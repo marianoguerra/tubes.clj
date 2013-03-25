@@ -65,7 +65,7 @@
 (defn error-reason-is [result reason]
   (is (= (get-in result [:reason]) reason)))
 
-(def is-not-error? (complement is-error?))
+(def is-not-error? (complement error?))
 
 (deftest tubes-test
   (testing "is-json-content-type"
@@ -75,8 +75,8 @@
                  json-result (pipe req-json is-json-content-type)
                  text-result (pipe req-text is-json-content-type)]
 
-             (is (not (is-error? json-result)))
-             (is (is-error? text-result))
+             (is (not (error? json-result)))
+             (is (error? text-result))
              (error-type-is text-result :bad-request)))
 
   (testing "conforms-to-json-schema"
@@ -97,7 +97,7 @@
                                  (conforms-to-json-schema entity-schema))]
 
              (is (is-not-error? result-ok))
-             (is (is-error? result-error))
+             (is (error? result-error))
              (error-type-is result-error :bad-request)
              (error-reason-is result-error "object doesn't validate against schema")))
 
@@ -136,7 +136,7 @@
 
              (is (is-not-error? result-post))
              (is (is-not-error? result-put))
-             (is (is-error? result-not-found))
+             (is (error? result-not-found))
              
              (is (= result-post "post"))
              (is (= result-put "put"))
@@ -152,7 +152,7 @@
                  result-error (pipe req (has-one-of-roles :admin :root))]
 
              (is (is-not-error? result-ok))
-             (is (is-error? result-error))
+             (is (error? result-error))
              (error-type-is result-error :unauthorized)
              (error-reason-is result-error "expected one of roles: admin, root")))
 
@@ -164,7 +164,7 @@
                  result-error (pipe req is-authenticated)]
 
              (is (is-not-error? result-ok))
-             (is (is-error? result-error))
+             (is (error? result-error))
              (error-type-is result-error :unauthorized)
              (error-reason-is result-error "not authenticated")))
 
@@ -180,7 +180,7 @@
                  result-error (pipe req in-pipe-1 out-pipe)]
 
              (is (is-not-error? result-ok))
-             (is (is-error? result-error))
+             (is (error? result-error))
              (is (= (:status result-error 401)))
              (is (= (-> result-error :body (parse-string true) :reason)
                     "expected one of roles: admin, root"))))
@@ -189,6 +189,6 @@
            (let [req (post "/session" entity-json)
                  result (pipe req is-json-content-type extract-json-body)]
 
-             (is (not (is-error? result)))
+             (is (not (error? result)))
              (is (= result entity))
              (is (= (:request (meta result)) req)))))
