@@ -105,9 +105,11 @@
            (let [req1 (post "/session" entity-json)
                  req2 (post "/user" entity-json)
                  req3 (post "/person" entity-json)
+                 session-val {:value "session"}
+                 user-val {:value "user"}
 
-                 dispatcher (dispatch-by-path {"/session" (fn [_] (continue "session"))
-                                                 "/user" (fn [_] (continue "user"))})
+                 dispatcher (dispatch-by-path {"/session" (fn [_] (continue session-val))
+                                                 "/user" (fn [_] (continue user-val))})
 
                  result-session (pipe req1 dispatcher)
                  result-user (pipe req2 dispatcher)
@@ -116,8 +118,8 @@
              (is (is-not-error? result-session))
              (is (is-not-error? result-user))
              
-             (is (= result-session "session"))
-             (is (= result-user "user"))
+             (is (= result-session session-val))
+             (is (= result-user user-val))
 
              (is (= (:reason result-not-found) "no handler for: /person"))
              (is (= (:type result-not-found) :not-found))))
@@ -126,9 +128,11 @@
            (let [req1 (post "/session" entity-json)
                  req2 (put "/user" entity-json)
                  req3 (assoc req1 :request-method :patch)
+                 post-val {:value "post"}
+                 put-val {:value "put"}
 
-                 dispatcher (dispatch-by-method {:post (fn [_] (continue "post"))
-                                               :put  (fn [_] (continue "put"))})
+                 dispatcher (dispatch-by-method {:post (fn [_] (continue post-val))
+                                               :put  (fn [_] (continue put-val))})
 
                  result-post (pipe req1 dispatcher)
                  result-put (pipe req2 dispatcher)
@@ -138,8 +142,8 @@
              (is (is-not-error? result-put))
              (is (error? result-not-found))
              
-             (is (= result-post "post"))
-             (is (= result-put "put"))
+             (is (= result-post post-val))
+             (is (= result-put put-val))
 
              (error-type-is result-not-found :method-not-supported)
              (error-reason-is result-not-found "no handler for method: patch")))

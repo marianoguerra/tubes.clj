@@ -129,7 +129,8 @@
   (let [meta-data (meta value)
         response-status-0 (or (:response-status meta-data) 200)
         response-status (if (error? value)
-                          (or (get (:type value) type-to-status) response-status-0)
+                          (or (get type-to-status (:type value))
+                              response-status-0)
                           response-status-0)
         response-headers (or (:response-headers meta-data) {})]
     (continue (http-response value response-status response-headers))))
