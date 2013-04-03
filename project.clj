@@ -1,9 +1,9 @@
-(defproject org.marianoguerra/tubes "0.2.2-SNAPSHOT"
+(defproject org.marianoguerra/tubes "0.2.2"
   :description "make ring based web apps by composing small functions"
   :url "http://github.com/marianoguerra/tubes.clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.marianoguerra/pipe "0.1.3-SNAPSHOT"]
+  :dependencies [[org.marianoguerra/pipe "0.1.3"]
                  [org.clojure/clojure "1.5.1"]
                  [cheshire "5.0.1"] 
                  [ring-mock "0.1.3"]
