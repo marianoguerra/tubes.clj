@@ -48,7 +48,7 @@
     (let [content-type (or (:content-type req) "")]
       (if (or (= content-type "application/json")
               (= (.indexOf content-type "application/json;") 0))
-        (continue req)
+        req
         (error {:reason "expected content type to be: application/json"
                 :actual content-type
                 :type :bad-request}))))
@@ -92,7 +92,7 @@
 (defn has-one-of-roles [& roles]
   (fn [req]
     (if (friend/authorized? roles (friend/identity req))
-      (continue req)
+      req
       (error {:reason (str "expected one of roles: "
                            (clojure.string/join ", " (map name roles)))
               :actual (-> (friend/identity req)
@@ -118,7 +118,7 @@
 (defn conforms-to-json-schema [schema]
   (fn [obj]
     (if (schema/validate schema obj)
-      (continue obj)
+      obj
       (error {:reason "object doesn't validate against schema"
               :schema schema
               :type   :bad-request}))))
@@ -133,11 +133,11 @@
                               response-status-0)
                           response-status-0)
         response-headers (or (:response-headers meta-data) {})]
-    (continue (http-response value response-status response-headers))))
+    (http-response value response-status response-headers)))
 
 (defn response-body-to-json [response]
   (let [headers (:headers response)
         new-headers (assoc headers "Content-Type" json-content-type)
         body (:body response)
         new-body (generate-string body)]
-    (continue (assoc response :headers new-headers :body new-body))))
+    (assoc response :headers new-headers :body new-body)))
