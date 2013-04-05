@@ -1,7 +1,8 @@
 (ns marianoguerra.tubes-test
   (:require
     [ring.mock.request :as req]
-    [cemerick.friend :as friend])
+    [cemerick.friend :as friend]
+    [marianoguerra.rate-meter :as rm])
   (:use marianoguerra.tubes
         marianoguerra.pipe
         clojure.test
@@ -171,6 +172,24 @@
              (is (error? result-error))
              (error-type-is result-error :unauthorized)
              (error-reason-is result-error "not authenticated")))
+
+  (testing "rate-limit"
+           (let [req (post "/session" entity-json)
+                 req-auth (attach-identity req)
+                 markers {:one-min rm/minute-mark :five-mins (rm/minute-step-mark 5)}
+                 tags (keys markers)
+                 rate-store (rm/memory-rate-store markers)
+                 limit-provider (constant-limit-provider 1)
+                 rate-limiter (rate-limit rate-store tags username-from-request
+                                          limit-provider)
+                 handler (fn [req] {:ok true})
+                 result-1 (pipe req-auth rate-limiter handler)
+                 result-2 (pipe req-auth rate-limiter handler)]
+
+             (is (= result-1 {:ok true}))
+             (is (= result-2 {:reason "rate limit reached"
+                              :id "bob"
+                              :type :too-many-requests}))))
 
   (testing "response mappers work"
            (let [req (attach-identity (post "/session" entity-json))

@@ -1,7 +1,8 @@
 (ns marianoguerra.tubes
   (:require
     [closchema.core :as schema]
-    [cemerick.friend :as friend])
+    [cemerick.friend :as friend]
+    [marianoguerra.rate-meter :as rm])
   (:use marianoguerra.pipe
         [cheshire.core :only (parse-string generate-string)]))
 
@@ -102,10 +103,25 @@
 
 (defn is-authenticated [req]
   (if (friend/current-authentication req)
-    (continue req)
+    req
     (error {:reason "not authenticated"
             :type :unauthorized})))
 
+(defn constant-limit-provider [limit] (fn [id tag] limit))
+(defn username-from-request [req] 
+  (:current (friend/identity req)))
+
+(defn rate-limit [rate-store tags request-to-id limit-provider & [num]]
+  (fn [req]
+    (let [id (request-to-id req)]
+      (rm/mark rate-store id (or num 1))
+      (if (some #(> (rm/rate rate-store id %) (limit-provider id %))
+                tags)
+        (error {:reason "rate limit reached"
+                :id id
+                :type :too-many-requests})
+        req))))
+          
 ;; request -> object handlers
 
 (defn extract-json-body [req]
