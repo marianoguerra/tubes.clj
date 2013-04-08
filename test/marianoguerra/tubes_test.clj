@@ -184,12 +184,15 @@
                                           limit-provider)
                  handler (fn [req] {:ok true})
                  result-1 (pipe req-auth rate-limiter handler)
-                 result-2 (pipe req-auth rate-limiter handler)]
+                 result-2 (pipe req-auth rate-limiter handler)
+                 result-response (pipe result-2 to-ring-response)]
 
              (is (= result-1 {:ok true}))
              (is (= result-2 {:reason "rate limit reached"
                               :id "bob"
-                              :type :too-many-requests}))))
+                              :type :too-many-requests}))
+             (is (error? result-2))
+             (is (= (:status result-response) 429))))
 
   (testing "response mappers work"
            (let [req (attach-identity (post "/session" entity-json))
