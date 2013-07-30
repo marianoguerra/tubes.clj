@@ -1,4 +1,4 @@
-(defproject org.marianoguerra/tubes "0.2.3"
+(defproject org.marianoguerra/tubes "0.2.4-SNAPSHOT"
   :description "make ring based web apps by composing small functions"
   :url "http://github.com/marianoguerra/tubes.clj"
   :license {:name "Eclipse Public License"
