@@ -6,8 +6,8 @@
   :dependencies [[org.marianoguerra/pipe "0.1.4"]
                  [org.marianoguerra/rate-meter "0.1.0"]
                  [org.clojure/clojure "1.5.1"]
-                 [cheshire "5.0.1"] 
-                 [ring-mock "0.1.3"]
-                 [ring/ring-core "1.1.8"]
-                 [com.cemerick/friend "0.1.4"]
-                 [bigml/closchema "0.3.1"]])
+                 [cheshire "5.2.0"] 
+                 [ring-mock "0.1.5"]
+                 [ring/ring-core "1.2.0"]
+                 [com.cemerick/friend "0.1.5"]
+                 [bigml/closchema "0.4"]])
