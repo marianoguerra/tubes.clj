@@ -203,7 +203,7 @@
                  result-ok (pipe req in-pipe out-pipe)
                  in-pipe-1 (compose (has-one-of-roles :admin :root)
                                     extract-json-body)
-                 result-error (pipe req in-pipe-1 out-pipe)]
+                 result-error (-> req (pipe in-pipe-1) (pipe out-pipe))]
 
              (is (is-not-error? result-ok))
              (is (error? result-error))
