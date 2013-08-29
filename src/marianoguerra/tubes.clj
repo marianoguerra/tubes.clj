@@ -10,10 +10,16 @@
 
 ;; utilities
 
+(defn mark-as-ring-response [value]
+  (vary-meta value assoc ::ring-response true))
+
+(defn ring-response? [value]
+  (::ring-response (meta value)))
+
 (defn http-response [data & [status headers]]
-  {:status (or status 200)
-   :headers (or headers {})
-   :body data})
+  (mark-as-ring-response {:status (or status 200)
+                          :headers (or headers {})
+                          :body data}))
 
 (defn json-response [data & [status headers]]
   (http-response (generate-string data) status
@@ -142,14 +148,16 @@
 ;; response handlers
 
 (defn to-ring-response [value]
-  (let [meta-data (meta value)
-        response-status-0 (or (:response-status meta-data) 200)
-        response-status (if (error? value)
-                          (or (get type-to-status (:type value))
-                              response-status-0)
-                          response-status-0)
-        response-headers (or (:response-headers meta-data) {})]
-    (http-response value response-status response-headers)))
+  (if (ring-response? value)
+    value
+    (let [meta-data (meta value)
+          response-status-0 (or (:response-status meta-data) 200)
+          response-status (if (error? value)
+                            (or (get type-to-status (:type value))
+                                response-status-0)
+                            response-status-0)
+          response-headers (or (:response-headers meta-data) {})]
+      (http-response value response-status response-headers))))
 
 (defn response-body-to-json [response]
   (let [headers (:headers response)

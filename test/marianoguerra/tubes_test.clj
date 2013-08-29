@@ -211,6 +211,15 @@
              (is (= (-> result-error :body (parse-string true) :reason)
                     "expected one of roles: admin, root"))))
 
+  (testing "mark-as-ring-response marks the response"
+    (is (ring-response? (mark-as-ring-response {})))
+    (is (not (ring-response? {}))))
+
+  (testing "to-ring-response returns value as is if marked as response"
+    (let [response (mark-as-ring-response {:value 42})]
+      (is (= response (to-ring-response response)))
+      (is (not= response (to-ring-response {:value 42})))))
+
   (testing "extract-json-body"
            (let [req (post "/session" entity-json)
                  result (pipe req is-json-content-type extract-json-body)]
